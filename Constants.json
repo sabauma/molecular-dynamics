@@ -1,0 +1,83 @@
+{
+    "atomic_properties" : [
+        {
+            "name"              : "Helium",
+            "atomic_diameter"   : 2.18e-10,
+            "atomic_mass"       : 4.000,
+            "omega_vss"         : 0.204,
+            "alpha_vss"         : 1.431,
+            "mu_vss"            : 1.865,
+            "diameter_vss"      : 2.30e-10,
+            "ionization_energy" : [
+                2372.3,
+                5250.5,
+                1.0e100,
+                1.0e100 ,
+                1.0e100 ,
+                1.0e100 ,
+                1.0e100 ,
+                1.0e100 ,
+                1.0e100
+                ]
+        },
+        {
+            "name"              : "Neon",
+            "atomic_diameter"   : 2.60e-10,
+            "atomic_mass"       : 20.18,
+            "omega_vss"         : 0.160,
+            "alpha_vss"         : 1.336,
+            "mu_vss"            : 2.975,
+            "diameter_vss"      : 2.72e-10,
+            "ionization_energy" : [
+                2080.7 ,
+                3952.3 ,
+                6122.0  ,
+                9371.0  ,
+                12177.0 ,
+                1.0e100 ,
+                1.0e100 ,
+                1.0e100 ,
+                1.0e100
+                ]
+        },
+        {
+            "name"              : "Argon",
+            "atomic_diameter"   : 3.66e-10,
+            "atomic_mass"       : 39.95,
+            "omega_vss"         : 0.201,
+            "alpha_vss"         : 1.425,
+            "mu_vss"            : 2.117,
+            "diameter_vss"      : 4.11e-10,
+            "ionization_energy" : [
+                1520.6 ,
+                2665.8 ,
+                3931.0  ,
+                5771.0  ,
+                7238.0  ,
+                8781.0  ,
+                11995.0 ,
+                13842.0 ,
+                1.0e100
+                ]
+        },
+        {
+            "name"              : "Xenon",
+            "atomic_diameter"   : 4.92e-10,
+            "omega_vss"         : 3.02,
+            "alpha_vss"         : 1.651,
+            "mu_vss"            : 2.107,
+            "diameter_vss"      : 5.65e-10,
+            "ionization_energy" : [
+                1170.4 ,
+                2046.4 ,
+                3099.4  ,
+                4600.0  ,
+                5760.0  ,
+                6930.0  ,
+                9460.0  ,
+                10800.0 ,
+                1.0e100
+                ]
+        }
+    ]
+}

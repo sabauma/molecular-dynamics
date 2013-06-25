@@ -1,0 +1,25 @@
+{
+    "Environment": {
+        "ConeAngle": 0.8,
+        "Temperature": 1000,
+        "WallTemp": 1000,
+        "R0": 0.1e-6,
+        "Pd": 1.65,
+        "Frequency": 30e3,
+        "Tini": 1.67514620165000e-5,
+        "Rini": 80.0e-6,
+        "Vini": 0.0226916298458000,
+        "Radi": 0.95,
+        "Riso": 1.00,
+        "EquilibriumPressure": 1.00,
+        "AmbientPressure": 1.00,
+        "DriverMode": "constant",
+        "Liquid": "Lithium"
+    },
+    "Particles": {
+        "AtomicParts": {
+            "D": 0.1,
+            "Xe": 0.9
+        }
+    }
+}

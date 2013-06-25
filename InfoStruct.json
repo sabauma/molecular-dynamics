@@ -1,0 +1,24 @@
+{
+    "Environment": {
+        "ConeAngle": 1.0,
+        "Temperature": 300.15,
+        "WallTemp": 300.00,
+        "R0": 1.0e-6,
+        "Pd": 750,
+        "Frequency": 1000,
+        "Tini": 0,
+        "Rini": 1.000e-6,
+        "Vini": 0,
+        "Radi": 0.00,
+        "Riso": 0,
+        "AmbientPressure": 0,
+        "DriverMode": "Constant",
+        "Liquid": "Diesel"
+    },
+    "Particles": {
+        "AtomicParts": {
+            "D2": 0.1,
+            "Xe": 0.9
+        }
+    }
+}

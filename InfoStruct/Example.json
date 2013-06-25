@@ -1,0 +1,33 @@
+{
+    "Environment" :
+    {
+        "ConeAngle"   : 0.8,
+        "Temperature" : 300,
+        "WallTemp"    : 300,
+        "R0"          : 2.2e-6,
+        "Pd"          : 1.65,
+        "Frequency"   : 30e3,
+        "Tini"        : 1.67514620165000E-5,
+        "Rini"        : 5.49288791309000E-5,
+        "Vini"        : 0.0226916298458000,
+        "Radi"        : 0.95,
+        "Riso"        : 1.00
+    },
+
+    "Particles" :
+    {
+        "AtomicParts" :
+        [
+            0.1,
+            0.0,
+            0.0,
+            0.9
+        ]
+    },
+
+    "Processing" :
+    {
+        "RandSeed"  : 19,
+        "EventMult" : 20
+    }
+}
