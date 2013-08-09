@@ -5,7 +5,7 @@
         "WallTemp": 300.00,
         "R0": 1.0e-6,
         "Pd": 750,
-        "Frequency": 1000,
+        "Frequency": 30000,
         "Tini": 0,
         "Rini": 1.000e-6,
         "Vini": 0,
@@ -13,7 +13,7 @@
         "Riso": 0,
         "AmbientPressure": 0,
         "DriverMode": "Constant",
-        "Liquid": "Diesel"
+        "Liquid": "Water"
     },
     "Particles": {
         "AtomicParts": {

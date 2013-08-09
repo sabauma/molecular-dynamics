@@ -63,8 +63,6 @@ public:
     double LiquidSurfaceTension;
 
     double FusionBarrier;
-    double FusionWidth;
-    double PlankConstant;
 
     double AtomicDiameter[ET];
     double AtomicDiameterSquared[ET][ET];
@@ -78,7 +76,7 @@ public:
 
     DriverMode Driver;
 
-    int FusionRate;
+    double CollisionThreshold;
 
     /**
      * Empty constructor simply initializes the values to zero. They must be

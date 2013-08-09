@@ -44,6 +44,37 @@ static const int CONST_CELL_FACTOR = 2;
 static const size_t BUFFER_SIZE = 65536;
 
 /**
+ * Computes the effective fusion diameter of two deuterium particles involved
+ * in a collision that could potentially fuse.
+ */
+static inline double fusion_diameter(double energy)
+{
+    // Convert to real world units of energy in the form of KeV
+    energy *= Units::Energy * 6.2415e15;
+
+    // Constants used to determine the fusion cross section. They are taken
+    // from the NRL Plasma Formulary for D-T collision
+    static const double a1 = 45.95;
+    static const double a2 = 50200;
+    static const double a3 = 1.368e-2;
+    static const double a4 = 1.076;
+    static const double a5 = 409;
+
+    const double numerator   = a5 + a2 / (Sqr(a4 - a3 * energy) + 1.0);
+    const double denominator = energy * exp(a1 / sqrt(energy)) - 1.0;
+
+    // Constant factor corrects for the fact that the result is in barns, so
+    // we scale it to square meters to get a usable value.
+    const double area = 1.0e-28 * numerator / denominator;
+
+    // The targt is circular, so we get the diameter.
+    const double diam = sqrt(area / Constants::PI);
+
+    // Convert back to simulation units
+    return diam / Units::L;
+}
+
+/**
  * Performs a rotation of the vector v around the vector n based of the
  * given angle (in radians). All vectors are assumed to have a dimension of
  * 3, otherwise this will not be a valid transformation.
@@ -53,7 +84,7 @@ static const size_t BUFFER_SIZE = 65536;
  * @param theta The angle of rotation in degrees.
  */
 static inline void
-RotateVector(DoubleVector& v, const DoubleVector& n, const double theta)
+rotate_vector(DoubleVector& v, const DoubleVector& n, const double theta)
 {
     DoubleVector vn(n);
     DoubleVector vt(cross(v, n));
@@ -84,6 +115,17 @@ Simulation::Diameter2(const double vv, const Particle& p1, const Particle& p2)
     const int type1 = p1.Type;
     const int type2 = p2.Type;
     const double ene = Info.ReducedMass[type1][type2] * vv;
+
+    // One keV in simulation units. If we exceed that energy, and are using
+    // deuterium, we use a nuclear scale.
+    //const double keV = 0.01 * 1.602176e-16 / Units::Energy;
+
+    // If we are analyzing a fusable gas pair with more than 1 kev of
+    // energy, we return the nuclear diameter.
+    //if (type1 == type2 && ene > keV && Constants::FUSABLE[type1])
+    //{
+        //return Sqr(14.0e-15 / Units::L);
+    //}
 
     const double d1 = sqrt(Info.BirdConstant[type1] * sqrt(Info.AtomicMass[type1])
                            / pow(ene, Constants::BIRD_OMEGA_INI[type1]));
@@ -279,7 +321,7 @@ void Simulation::ProcessBubbleWall()
     }
 
     perp = normalize(perp);
-    RotateVector(perp, normal, 2.0 * Constants::PI * uniform_rand());
+    rotate_vector(perp, normal, 2.0 * Constants::PI * uniform_rand());
 
     pa.Velocity = (Info.VWallThermal[pa.Type] * rand_maxwell_2d() - vWall) * normal +
                   (Info.VWallThermal[pa.Type] * rand_maxwell_2d()) * perp;
@@ -322,10 +364,6 @@ void Simulation::ProcessCollision()
     const double Minv = 1.0 / (mA + mB);
     const double fac  = dot(dr, dv) / dot(dr, dr);
 
-    // Compute the change in velocities.
-    pa.Velocity -= (2.0 * mB * fac * Minv) * dr;
-    pb.Velocity += (2.0 * mA * fac * Minv) * dr;
-
     /*****************************************************************************\
     *  Steve's Comment: If collision energy>ionization energy we have work to do: *
     *  1. Compute the velocity of the center of mass, vCoM                        *
@@ -344,25 +382,43 @@ void Simulation::ProcessCollision()
     *  CORRECTION: Now we do not assign any energy to the electron (!)            *
     \*****************************************************************************/
 
-    const double mReduced = Info.ReducedMass[typeA][typeB];
-    // K = 0.5 * m * v^2
-    double ECoM = mReduced * dot(dv, dv); // total energy in CoM
+    // Total energy in the center of mass frame of motion.
+    double ECoM = Info.ReducedMass[typeA][typeB] * dot(dv, dv);
 
     const DoubleVector CoM(0.5 * (pa.Position + pb.Position));
 
-    CollisionRecord rec;
-    rec.Position = CoM;
-    rec.Time     = CurrentTime;
-    rec.DeltaV   = norm2(dv);
-    rec.Energy   = ECoM;
-    rec.Distance = norm2(dr);
-    rec.Type1    = pa.Type;
-    rec.Type2    = pb.Type;
+    // For fusable collision participants, we save the
+    if (typeA == typeB && Constants::FUSABLE[typeA])
+    {
+        CollisionRecord rec;
+        rec.Position    = CoM;
+        rec.Time        = CurrentTime;
+        rec.DeltaV      = norm2(dv);
+        rec.Energy      = ECoM;
+        rec.Distance    = norm2(dr);
+        rec.ReducedMass = Info.ReducedMass[typeA][typeB];
+        rec.Type1       = pa.Type;
+        rec.Type2       = pb.Type;
 
-    //Stats.Collisions.push_back(rec);
-    //Stats.MaxCollisionEnergy = std::max(Stats.MaxCollisionEnergy, ECoM);
+        Stats.RegisterCollision(rec);
 
-    Stats.RegisterCollision(rec);
+        // The minimum pass distance for the pair of particles.
+        const double diameter = fusion_diameter(ECoM);
+        const double int_time = intersection_time(pa.Position, pa.Velocity,
+                                                  pb.Position, pb.Velocity,
+                                                  diameter);
+
+        const double EKeV = ECoM * Units::Energy * 6.24150934e15;
+
+        if (int_time != Constants::NEVER)
+        {
+            ++Stats.FusionRate;
+        }
+    }
+
+    // Compute the change in velocities.
+    pa.Velocity -= (2.0 * mB * fac * Minv) * dr;
+    pb.Velocity += (2.0 * mA * fac * Minv) * dr;
 
     const double CONST_ENERGY_TO_KEEP = 1.0;
 
@@ -440,19 +496,6 @@ void Simulation::ProcessCollision()
     PredictEvents<AllParticles>(na, nb, CollisionEvent);
     // Predict all events for nb skipping na, as we already checked it.
     PredictEvents<Skipping>(nb, na, CollisionEvent);
-
-    // Fusion occurs only between two particles of the lighest elements.
-    // This assumes that type index 0 corresponds to Hydrogen.
-    if (typeA == typeB && Constants::FUSABLE[typeA])
-    {
-        const double T = ECoM * 2.0 / Constants::KB * Units::Energy;
-
-        // If the temperature is higher then Coulomb barier penetration
-        if (T > 4.5e7)
-        {
-            ++Stats.FusionRate;
-        }
-    }
 }
 
 void Simulation::DissociateParticle(const int na)
@@ -544,7 +587,11 @@ void Simulation::ProcessUpdateSystem()
     SnapshotCount++;
 
     WriteSnapshot();
-    WriteCollisionEnergy();
+
+    if (Save)
+    {
+        WriteCollisionEnergy();
+    }
 
     double nextStepTime = RPKEquation.NextStepTime();
 
@@ -796,7 +843,7 @@ void Simulation::PopulateCalendar()
 /*********************************************************************************/
 /*                                    Interface                                  */
 /*********************************************************************************/
-Simulation::Simulation(const InfoStruct& info) :
+Simulation::Simulation(const InfoStruct& info, const bool save) :
     Info(info),
     Partitions(0, 0, 0, 0),
     Particles(0),
@@ -808,6 +855,7 @@ Simulation::Simulation(const InfoStruct& info) :
     LastVelocity(0.0),
     LastSnapshotTime(0.0),
     Rebounded(false),
+    Save(save),
     Stats(Info, MAX_BINS, COLLISION_RECORDS),
     PerformanceClock(0)
 {

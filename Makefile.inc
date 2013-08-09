@@ -1,8 +1,8 @@
 
 # put common definitions in here
-CPP         = g++
+# CPP         = g++
 # CPP = clang++
-# CPP = /usr/lib/gcc-snapshot/bin/g++
+CPP = /usr/lib/gcc-snapshot/bin/g++
 
 # -DBOOST_DISABLE_ASSERTS -DNDEBUG
 PRJCPPFLAGS = -DTVMET_OPTIMIZE  -DBOOST_DISABLE_ASSERTS -DNDEBUG\

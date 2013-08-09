@@ -40,8 +40,6 @@ namespace Constants
 
     /** Energy required to initiate fusion in Joules */
     constexpr double FusionBarrier = 4.5e7 * KB * 3.0 / 2.0;
-    /** Width of the fusion barrier in meters */
-    constexpr double FusionWidth = 1.0e-11;
     /** Plank's constant in m^2 kg / s */
     constexpr double Plank = 6.626068e-34;
 
@@ -66,7 +64,7 @@ namespace Constants
         IntVector(-Z)
     };
 
-    constexpr int LIQUID_TYPES = 4;
+    constexpr int LIQUID_TYPES = 5;
 
     /** Names of the possible liquids in the simulation */
     const std::string LIQUID_NAMES[LIQUID_TYPES] =
@@ -74,7 +72,8 @@ namespace Constants
         "lithium",
         "mercury",
         "water",
-        "diesel"
+        "diesel",
+        "ig-4"
     };
 
     const std::map<std::string, int> LIQUID_FROM_NAME
@@ -88,7 +87,8 @@ namespace Constants
         1.245e-6, // Lithium
         0.114e-6, // Mercury
         1.004e-6, // Water
-        2.000e-6  // Diesel
+        2.000e-6, // Diesel
+        118.0e-6  // IG-4 from MultiTherm
     };
 
     /**
@@ -100,6 +100,7 @@ namespace Constants
         0.485,   // Mercury
         0.0728,  // Water
         23.8e-3, // Diesel
+        23.8e-3  // IG-4 from MultiTherm (estimated from diesel)
     };
 
     /**
@@ -110,7 +111,8 @@ namespace Constants
         516,    // Lithium
         5430,   // Mercury
         999.07, // Water
-        832.00  // Diesel
+        832.00, // Diesel
+        863.0   // IG-4 from MultiTherm
     };
 
     /**
@@ -121,7 +123,8 @@ namespace Constants
         4490, // Lithium
         1450, // Mercury
         1497, // Water
-        1250  // Diesel
+        1250, // Diesel
+        1300  // IG-4 from MultiTherm (estimate)
     };
 }
 

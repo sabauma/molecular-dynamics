@@ -16,7 +16,11 @@ class CollisionData(object):
     def data_from_file(fname):
         retval = CollisionData()
         with open(fname, 'r') as handle:
-            data = numpy.genfromtxt(handle, delimiter=',')
+            data = numpy.genfromtxt(handle, delimiter=',', skip_header=1)
+
+            if len(numpy.shape(data)) == 1:
+                return None
+
             retval.times     = data[:,0]
             retval.positions = data[:,1:4]
             retval.deltaVs   = data[:,4]

@@ -10,6 +10,7 @@ struct CollisionRecord
     double DeltaV;
     double Energy;
     double Distance;
+    double ReducedMass;
     int Type1;
     int Type2;
 };

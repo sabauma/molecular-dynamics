@@ -514,7 +514,6 @@ void RPK::Init()
     Times.push_back(Time[0]);
     Radii.push_back(NextRadius[0]);
 
-
     // Write header for actual RP solution
     // out = fopen("RPactual.dat", "w");
     fprintf(Actual, "Time\tR\tV\tPressureNow\tdpdt\n");

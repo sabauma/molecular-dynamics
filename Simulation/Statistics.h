@@ -211,17 +211,32 @@ void Statistics::ComputeStatistics(
 template <typename Stream>
 void Statistics::WriteCollisions(Stream& stream) const
 {
+    stream << "Time"          << ','
+           << " X"            << ','
+           << " Y"            << ','
+           << " Z"            << ','
+           << " ΔV"           << ','
+           << " Energy"       << ','
+           << " Distance"     << ','
+           << " Reduced Mass" << ','
+           << " Type 1"       << ','
+           << " Type 2"       << '\n';
+
     for (auto it = Collisions.begin(); it != Collisions.end(); ++it)
     {
-        stream << it->Time * Units::T << ','
-               << it->Position[0] * Units::L << ','
-               << it->Position[1] * Units::L << ','
-               << it->Position[2] * Units::L << ','
-               << it->DeltaV * Units::L / Units::T << ','
-               << it->Energy * Units::Energy  << ','
-               << it->Distance * Units::L << ','
-               << it->Type1 << ','
-               << it->Type2 << '\n';
+        if (it->Type1 == it->Type2 && Constants::FUSABLE[it->Type1])
+        {
+            stream  << it->Time * Units::T              << ','
+                    << it->Position[0] * Units::L       << ','
+                    << it->Position[1] * Units::L       << ','
+                    << it->Position[2] * Units::L       << ','
+                    << it->DeltaV * Units::L / Units::T << ','
+                    << it->Energy * Units::Energy       << ','
+                    << it->Distance * Units::L          << ','
+                    << it->ReducedMass * Units::M       << ','
+                    << it->Type1                        << ','
+                    << it->Type2                        << '\n';
+        }
     }
 }
 

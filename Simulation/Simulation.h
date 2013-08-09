@@ -161,6 +161,7 @@ private:
     double     LastVelocity;    /**< Velocity at the last system update */
     double     LastSnapshotTime; /**< Time of the last snapshot */
     bool       Rebounded;       /**< Flag indicating that the simulation has rebounded */
+    bool       Save;        /**< Whether or not to save additional files like collision energy */
 
     Statistics Stats;
 
@@ -395,7 +396,7 @@ public:
      *             configurable parameters of the simulation.
      * @param n The number of particle to generate.
      */
-    explicit Simulation(const InfoStruct& info);
+    explicit Simulation(const InfoStruct& info, const bool save=true);
 
     /**
      * Prints all the events in the calendar to standard out if we are in

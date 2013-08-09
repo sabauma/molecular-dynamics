@@ -101,7 +101,10 @@ void Statistics::RegisterCollision(CollisionRecord& rec)
         std::swap(rec.Type1, rec.Type2);
     }
 
-    this->Collisions.push_back(rec);
+    if (rec.Energy >= Info.CollisionThreshold)
+    {
+        this->Collisions.push_back(rec);
+    }
 
     const std::pair<int, int> key = std::make_pair(rec.Type1, rec.Type2);
     MaxCollisionEnergySpecies[key] =

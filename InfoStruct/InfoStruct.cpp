@@ -14,6 +14,12 @@
 using namespace std;
 using Constants::PI;
 
+// Default collision threshold is 3keV
+static const double DEFAULT_THRESHOLD = 1.0;
+
+// Conversion factor of Kev to joules
+static const double KEV_TO_J = 1.602177e-16;
+
 static DriverMode
 read_driver_mode(const std::string& str)
 {
@@ -84,9 +90,6 @@ InfoStruct::ToSimulationUnits() const
 
     // Convert parameters relevant to fusion
     converted.FusionBarrier = this->FusionBarrier / Units::Energy;
-    converted.FusionWidth   = this->FusionWidth / Units::L;
-    converted.PlankConstant = this->PlankConstant * Units::T
-                            / (Units::L * Units::L * Units::M);
 
     // Convert AtomicMass
     std::transform(this->AtomicMass, this->AtomicMass + ET,         // Input
@@ -107,6 +110,10 @@ InfoStruct::ToSimulationUnits() const
     // conversion.
     converted.ConeTan2 = Sqr(tan(converted.ConeAngle));
 	converted.ConeSolidAngle = 2.0 * PI * (1.0 - cos(converted.ConeAngle));
+
+    // Convert the collision threshold, which is in keV to simulation units.
+    converted.CollisionThreshold = this->CollisionThreshold * KEV_TO_J
+                                 / Units::Energy;
 
     // Copy appropriate tables to be initialized from the converted data,
     // rather than original SI values.
@@ -164,6 +171,16 @@ InfoStruct::ParseInfoStruct(const std::string& fname)
     is.Radi            = environment["Radi"].GetDouble();
     is.Riso            = environment["Riso"].GetDouble();
 
+    // Use the default collision threshold if no value is specified.
+    if (environment.HasMember("CollisionThreshold"))
+    {
+        is.CollisionThreshold = environment["CollisionThreshold"].GetDouble();
+    }
+    else
+    {
+        is.CollisionThreshold = DEFAULT_THRESHOLD;
+    }
+
     assert(document["Particles"]["AtomicParts"].IsObject());
     Value& parts = document["Particles"]["AtomicParts"];
 
@@ -208,8 +225,6 @@ InfoStruct::CopyConstants()
     LiquidSpeedOfSound   = Constants::SpeedOfSound[LiquidType];
 
     FusionBarrier        = Constants::FusionBarrier;
-    FusionWidth          = Constants::FusionWidth;
-    PlankConstant        = Constants::Plank;
 
     std::copy(Constants::ATOMIC_DIAMETER_INI,
               Constants::ATOMIC_DIAMETER_INI + ET,

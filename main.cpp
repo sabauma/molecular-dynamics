@@ -15,9 +15,7 @@
 #include "Vector/Vector.hpp"
 
 //static const std::string DELETE_LINE(240, '\b');
-static const std::string DELETE_LINE = std::string(80, '\b')
-                                     + std::string(80, ' ' )
-                                     + std::string(80, '\b');
+static const std::string DELETE_LINE = "\r";
 
 int main(int argc, char** argv)
 {
@@ -89,6 +87,7 @@ int main(int argc, char** argv)
         printf("%12g\n", is.VWallThermal[i]);
     }
 
+    int after_rebound = 0;
     for (unsigned long long i = 0, updates = 0; ; ++i)
     {
         EventType type = simulation.NextStep();
@@ -124,9 +123,10 @@ int main(int argc, char** argv)
             particle_file.close();
             ++updates;
 
-            if (simulation.HasRebounded()) break;
+            if (simulation.HasRebounded() && ++after_rebound == 10) break;
         }
     }
 
     return 0;
 }
+
