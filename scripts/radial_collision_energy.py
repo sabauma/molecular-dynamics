@@ -58,3 +58,4 @@ for fname in sys.argv[1:]:
     print fname
     data = CollisionData.data_from_file(fname)
     make_histogram(data, fname)
+
