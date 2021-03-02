@@ -35,7 +35,6 @@ def data_from_file(fname):
 
 def main(args):
     for fname, snapshot in args:
-
         snap = None
         with open(snapshot, 'r') as infile:
             snap = json.load(infile)
@@ -45,7 +44,7 @@ def main(args):
             time = snap['t']
         snap = None
 
-        print fname, snapshot
+        print(fname, snapshot)
         pos, vel, types = data_from_file(fname)
 
         x_min = np.min(pos[:,1])
@@ -75,7 +74,7 @@ def main(args):
 
         X[gridys, gridxs, :] = [colors[i] for i in types]
 
-        im = ax.imshow(X, origin='lower', aspect=0.5, cmap=cm.jet)
+        im = ax.imshow(X, origin='lower', aspect=1.0, cmap=cm.jet)
 
         ax.set_title("t= %0.5f ns" % (time * 1.0e9))
         ax.set_xlabel("Red = D \n Green = D2 \n Blue = Xe")
@@ -91,7 +90,7 @@ if __name__ == '__main__':
     snaps = glob.glob("Snapshot*.dat")
     saves.sort()
     snaps.sort()
-    pairs = zip(saves, snaps)
+    pairs = list(zip(saves, snaps))
     pool = Pool(processes=POOL_SIZE)
 
     pool.map_async(main, chunks(pairs, POOL_SIZE)).get(99999999)

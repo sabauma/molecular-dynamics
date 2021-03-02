@@ -5,7 +5,7 @@ import collections
 try:
     import simplejson as json
 except ImportError:
-    print "Was unable to import simplejson!"
+    print("Was unable to import simplejson!")
     import json
 
 class Snapshot(object):
@@ -21,10 +21,10 @@ class Snapshot(object):
         bins  = self.__data["bins"]
 
         for bin in bins:
-            for k, v in bin[field_name].iteritems():
+            for k, v in bin[field_name].items():
                 cache[k].append(v)
 
-        retval = dict((k, np.array(v)) for k, v in cache.iteritems())
+        retval = dict((k, np.array(v)) for k, v in cache.items())
 
         return retval
 
@@ -44,7 +44,7 @@ class Snapshot(object):
 
 def main():
     snap = Snapshot.read_snapshot("example.dat")
-    print snap.get_species_statistic("temperature")
-    print snap.get_bin_statistic("density")
+    print(snap.get_species_statistic("temperature"))
+    print(snap.get_bin_statistic("density"))
 
 if __name__ == '__main__': main()

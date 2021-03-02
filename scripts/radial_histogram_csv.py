@@ -19,7 +19,7 @@ import sys
 try:
     import simplejson as json
 except ImportError:
-    print "No simplejson for you!"
+    print("No simplejson for you!")
     import json
 
 COLORS = [ np.array([0.8, 0.0, 0.0]),
@@ -51,8 +51,8 @@ def setAxLinesBW(ax):
     for line in ax.get_lines():
         origColor = line.get_color()
         line.set_color('black')
-        line.set_dashes(COLORMAP[origColor]['dash'])
-        line.set_marker(COLORMAP[origColor]['marker'])
+        #line.set_dashes(COLORMAP[origColor]['dash'])
+        #line.set_marker(COLORMAP[origColor]['marker'])
         line.set_markersize(MARKERSIZE)
 
 def setFigLinesBW(fig):
@@ -144,5 +144,5 @@ def make_histogram(fname):
     ax = None
 
 for fname in sys.argv[1:]:
-    print fname
+    print(fname)
     make_histogram(fname)

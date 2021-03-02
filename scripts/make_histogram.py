@@ -46,7 +46,7 @@ def make_histogram(data, field, scalar=1.0):
     percentages = data.get_species_statistic("percentage")
     field_data = data.get_species_statistic(field)
 
-    for species in field_data.iterkeys():
+    for species in field_data.keys():
         if any(percentages[species] != 0.0):
             ax.plot(radii, field_data[species] * scalar, label=species)
 
@@ -74,7 +74,7 @@ def make_histograms(datas, field, names=None, scalar=1.0):
         percentages = data.get_species_statistic("percentage")
         field_data = data.get_species_statistic(field)
 
-        for species in field_data.iterkeys():
+        for species in field_data.keys():
             if any(percentages[species] > 0.05):
                 error = 1.0 - (float(name) / 1000)
                 ax.plot(radii, field_data[species] * scalar, label=species + "-" + str(error))

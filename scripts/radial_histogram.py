@@ -18,7 +18,7 @@ import sys
 try:
     import simplejson as json
 except ImportError:
-    print "No simplejson for you!"
+    print("No simplejson for you!")
     import json
 
 def json_data(pattern):
@@ -90,5 +90,5 @@ def make_histogram(fnames, labels=None):
     ax = None
 
 for fname in sys.argv[1:]:
-    print fname
+    print(fname)
     make_histogram(fname)
